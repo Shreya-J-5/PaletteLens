@@ -11,6 +11,7 @@ export const PageAnalysisDetail: React.FC = () => {
   const [page, setPage] = useState<AnalysisPage | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedColour, setSelectedColour] = useState<Colour | null>(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (!analysisId || !pageId) return;
@@ -80,12 +81,13 @@ export const PageAnalysisDetail: React.FC = () => {
             <ImageIcon className="w-4 h-4 text-[#8B5CF6]" />
             Page Preview
           </h3>
-          {page.screenshot_path ? (
+          {page.screenshot_path && !imageError ? (
             <div className="rounded-2xl overflow-hidden border border-[#262830] shadow-xl bg-[#16171B] max-h-[500px]">
               <img
                 src={`/${page.screenshot_path}`}
                 alt={page.page_title || 'Page preview'}
                 className="w-full h-full object-cover object-top"
+                onError={() => setImageError(true)}
               />
             </div>
           ) : (

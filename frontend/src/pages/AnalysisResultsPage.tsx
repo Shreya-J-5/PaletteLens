@@ -187,6 +187,10 @@ export const AnalysisResultsPage: React.FC = () => {
                         src={`/${p.screenshot_path}`}
                         alt={p.page_title || 'Page preview'}
                         className="w-full h-full object-cover object-top"
+                        onError={(e) => {
+                          const target = e.currentTarget.parentElement as HTMLElement | null;
+                          if (target) target.style.display = 'none';
+                        }}
                       />
                     </div>
                   )}
