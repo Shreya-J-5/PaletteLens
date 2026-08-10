@@ -47,8 +47,8 @@ export const AnalysisResultsPage: React.FC = () => {
   if (loading && !analysis) {
     return (
       <div className="py-24 text-center space-y-3">
-        <RefreshCw className="w-7 h-7 animate-spin text-[#8A8F98] mx-auto" />
-        <p className="text-xs font-medium text-[#666A73]">Loading color extractions...</p>
+        <RefreshCw className="w-7 h-7 animate-spin text-[#8B5CF6] mx-auto" />
+        <p className="text-xs font-medium text-[#9CA3AF]">Loading color extractions...</p>
       </div>
     );
   }
@@ -94,24 +94,26 @@ export const AnalysisResultsPage: React.FC = () => {
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-7">
       
       {/* Back button & Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#DCDDD9] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#262830] pb-5">
         <div className="space-y-1">
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#666A73] hover:text-[#111318] transition-colors mb-1"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#9CA3AF] hover:text-white transition-colors mb-1"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Back to History
           </Link>
           <div className="flex items-center gap-3">
-            <span className="p-2 rounded-xl bg-white border border-[#DCDDD9] text-[#111318] shadow-2xs">
-              {analysis.source_type === 'website' && <Globe className="w-5 h-5 text-[#1677FF]" />}
-              {analysis.source_type === 'image' && <ImageIcon className="w-5 h-5 text-[#111318]" />}
-              {analysis.source_type === 'pdf' && <FileText className="w-5 h-5 text-[#111318]" />}
+            <span className="p-2 rounded-xl bg-[#16171B] border border-[#262830] text-white shadow-sm">
+              {analysis.source_type === 'website' && <Globe className="w-5 h-5 text-[#8B5CF6]" />}
+              {analysis.source_type === 'image' && <ImageIcon className="w-5 h-5 text-[#EC4899]" />}
+              {analysis.source_type === 'pdf' && <FileText className="w-5 h-5 text-[#10B981]" />}
             </span>
             <div>
-              <h1 className="text-xl sm:text-2xl font-extrabold text-[#111318] tracking-tight">{title}</h1>
-              <p className="text-xs text-[#666A73] flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                {title} <span className="font-cursive text-[#A78BFA] text-3xl font-normal ml-1">Color Palette</span>
+              </h1>
+              <p className="text-xs text-[#9CA3AF] flex items-center gap-2">
                 <span>{analysis.page_count} {analysis.page_count === 1 ? 'page' : 'pages'} analyzed</span>
                 <span>•</span>
                 <span>{analysis.colour_count} significant colours detected</span>
@@ -122,9 +124,9 @@ export const AnalysisResultsPage: React.FC = () => {
 
         <button
           onClick={() => setShowExportModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#111318] hover:bg-[#252830] text-white rounded-xl text-xs font-semibold shadow-2xs transition-all self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white rounded-xl text-xs font-semibold shadow-lg transition-all self-start sm:self-auto cursor-pointer"
         >
-          <Download className="w-4 h-4 text-[#1677FF]" />
+          <Download className="w-4 h-4 text-white" />
           Export Palette
         </button>
       </div>
@@ -136,14 +138,14 @@ export const AnalysisResultsPage: React.FC = () => {
         {analysis.pages.length > 0 && (
           <div className="lg:col-span-1 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-[#111318] text-xs flex items-center gap-1.5 uppercase tracking-wider">
-                <Layers className="w-3.5 h-3.5 text-[#666A73]" />
+              <h3 className="font-bold text-[#9CA3AF] text-xs flex items-center gap-1.5 uppercase tracking-wider font-mono">
+                <Layers className="w-3.5 h-3.5 text-[#8B5CF6]" />
                 Pages ({analysis.pages.length})
               </h3>
               {selectedPageFilter && (
                 <button
                   onClick={() => setSelectedPageFilter(null)}
-                  className="text-xs font-semibold text-[#1677FF] hover:underline"
+                  className="text-xs font-semibold text-[#8B5CF6] hover:underline"
                 >
                   Show Global
                 </button>
@@ -153,34 +155,34 @@ export const AnalysisResultsPage: React.FC = () => {
             <div className="space-y-2 max-h-[600px] overflow-y-auto pr-1">
               <button
                 onClick={() => setSelectedPageFilter(null)}
-                className={`w-full text-left p-3 rounded-xl border text-xs font-medium transition-all ${
+                className={`w-full text-left p-3.5 rounded-xl border text-xs transition-all ${
                   selectedPageFilter === null
-                    ? 'bg-[#111318] text-white border-[#111318] shadow-2xs'
-                    : 'bg-white text-[#111318] border-[#DCDDD9] hover:bg-[#F6F5F2]'
+                    ? 'bg-[#8B5CF6] text-white border-[#8B5CF6] shadow-md font-semibold'
+                    : 'bg-[#16171B] text-[#9CA3AF] border-[#262830] hover:text-white hover:border-[#8B5CF6]'
                 }`}
               >
-                <div className="font-semibold">Global Website Palette</div>
-                <div className="text-[11px] opacity-75 mt-0.5">Aggregated brand colours</div>
+                <div className="font-semibold text-white">Global Website Palette</div>
+                <div className="text-[11px] opacity-80 mt-0.5">Aggregated brand colours</div>
               </button>
 
               {analysis.pages.map((p) => (
                 <Link
                   key={p.id}
                   to={`/analysis/${analysis.id}/page/${p.id}`}
-                  className={`block w-full text-left p-3 rounded-xl border text-xs transition-all group ${
+                  className={`block w-full text-left p-3.5 rounded-xl border text-xs transition-all group ${
                     selectedPageFilter === p.id
-                      ? 'bg-[#111318] text-white border-[#111318] shadow-2xs'
-                      : 'bg-white text-[#111318] border-[#DCDDD9] hover:border-[#111318]'
+                      ? 'bg-[#8B5CF6] text-white border-[#8B5CF6] shadow-md'
+                      : 'bg-[#16171B] text-[#9CA3AF] border-[#262830] hover:border-[#8B5CF6] hover:text-white'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <span className="font-semibold truncate max-w-[140px]">
                       {p.page_title || p.url}
                     </span>
-                    <ChevronRight className="w-3.5 h-3.5 text-[#8A8F98] group-hover:translate-x-0.5 transition-transform" />
+                    <ChevronRight className="w-3.5 h-3.5 text-[#9CA3AF] group-hover:translate-x-0.5 transition-transform" />
                   </div>
                   {p.screenshot_path && (
-                    <div className="mt-2 h-16 w-full rounded-lg overflow-hidden border border-[#DCDDD9] bg-[#F6F5F2]">
+                    <div className="mt-2 h-16 w-full rounded-lg overflow-hidden border border-[#262830] bg-[#1E2026]">
                       <img
                         src={`/${p.screenshot_path}`}
                         alt={p.page_title || 'Page preview'}
@@ -202,12 +204,16 @@ export const AnalysisResultsPage: React.FC = () => {
 
           {/* Colour Swatches Header */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-[#DCDDD9] pb-3">
-              <h2 className="font-bold text-[#111318] text-base flex items-center gap-2">
-                <Palette className="w-4 h-4 text-[#111318]" />
-                {selectedPageFilter ? 'Page Palette' : 'Global Website Palette'}
+            <div className="flex items-center justify-between border-b border-[#262830] pb-3">
+              <h2 className="font-extrabold text-white text-base flex items-center gap-2">
+                <Palette className="w-4 h-4 text-[#8B5CF6]" />
+                {selectedPageFilter ? 'Page Palette' : (
+                  <>
+                    Global Website <span className="font-cursive text-[#A78BFA] text-xl font-normal">Swatches</span>
+                  </>
+                )}
               </h2>
-              <span className="text-xs font-semibold text-[#666A73]">
+              <span className="text-xs font-mono font-medium text-[#9CA3AF] bg-[#16171B] border border-[#262830] px-2.5 py-1 rounded-lg">
                 {displayColours.length} colours
               </span>
             </div>

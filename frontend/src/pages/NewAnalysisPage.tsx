@@ -52,29 +52,31 @@ export const NewAnalysisPage: React.FC = () => {
     <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 space-y-6">
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#666A73] hover:text-[#111318] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#9CA3AF] hover:text-white transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         Back
       </button>
 
       <div className="space-y-1">
-        <h1 className="text-2xl font-extrabold text-[#111318] tracking-tight">New Colour Analysis</h1>
-        <p className="text-xs text-[#666A73]">Extract dominant colours and production design system palettes</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">
+          New <span className="font-cursive text-[#A78BFA] text-3xl font-bold ml-1">Colour Extraction</span>
+        </h1>
+        <p className="text-xs text-[#9CA3AF]">Extract dominant colours and production design system palettes</p>
       </div>
 
-      <div className="bg-white border border-[#DCDDD9] rounded-2xl p-6 sm:p-8 shadow-2xs space-y-6">
-        <div className="grid grid-cols-3 gap-1.5 bg-[#F6F5F2] border border-[#DCDDD9] p-1 rounded-xl text-xs font-medium">
+      <div className="bg-[#16171B] border border-[#262830] rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="grid grid-cols-3 gap-1.5 bg-[#1E2026] border border-[#262830] p-1 rounded-xl text-xs font-medium">
           <button
             type="button"
             onClick={() => setActiveTab('website')}
             className={`flex items-center justify-center gap-1.5 py-2.5 rounded-lg transition-all ${
               activeTab === 'website'
-                ? 'bg-white text-[#111318] border border-[#DCDDD9] shadow-2xs font-semibold'
-                : 'text-[#666A73] hover:text-[#111318]'
+                ? 'bg-[#16171B] text-white border border-[#262830] shadow-sm font-semibold'
+                : 'text-[#9CA3AF] hover:text-white'
             }`}
           >
-            <Globe className="w-3.5 h-3.5 text-[#1677FF]" />
+            <Globe className="w-3.5 h-3.5 text-[#8B5CF6]" />
             Website
           </button>
           <button
@@ -82,11 +84,11 @@ export const NewAnalysisPage: React.FC = () => {
             onClick={() => setActiveTab('image')}
             className={`flex items-center justify-center gap-1.5 py-2.5 rounded-lg transition-all ${
               activeTab === 'image'
-                ? 'bg-white text-[#111318] border border-[#DCDDD9] shadow-2xs font-semibold'
-                : 'text-[#666A73] hover:text-[#111318]'
+                ? 'bg-[#16171B] text-white border border-[#262830] shadow-sm font-semibold'
+                : 'text-[#9CA3AF] hover:text-white'
             }`}
           >
-            <ImageIcon className="w-3.5 h-3.5 text-[#111318]" />
+            <ImageIcon className="w-3.5 h-3.5 text-white" />
             Image
           </button>
           <button
@@ -94,11 +96,11 @@ export const NewAnalysisPage: React.FC = () => {
             onClick={() => setActiveTab('file')}
             className={`flex items-center justify-center gap-1.5 py-2.5 rounded-lg transition-all ${
               activeTab === 'file'
-                ? 'bg-white text-[#111318] border border-[#DCDDD9] shadow-2xs font-semibold'
-                : 'text-[#666A73] hover:text-[#111318]'
+                ? 'bg-[#16171B] text-white border border-[#262830] shadow-sm font-semibold'
+                : 'text-[#9CA3AF] hover:text-white'
             }`}
           >
-            <FileText className="w-3.5 h-3.5 text-[#111318]" />
+            <FileText className="w-3.5 h-3.5 text-white" />
             PDF / File
           </button>
         </div>
@@ -106,22 +108,22 @@ export const NewAnalysisPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-5">
           {activeTab === 'website' ? (
             <div className="space-y-1.5 text-left">
-              <label className="block text-[11px] font-semibold text-[#111318] uppercase tracking-wider">Target Website Address</label>
+              <label className="block text-[11px] font-mono font-medium text-[#9CA3AF] uppercase tracking-wider">Target Website Address</label>
               <input
                 type="url"
                 placeholder="https://example.com"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#F6F5F2] border border-[#DCDDD9] rounded-xl text-[#111318] placeholder:text-[#8A8F98] text-xs font-mono focus:outline-none focus:border-[#111318] focus:bg-white transition-all"
+                className="w-full px-4 py-2.5 bg-[#1E2026] border border-[#262830] rounded-xl text-white placeholder:text-[#6B7280] text-xs font-mono focus:outline-none focus:border-[#8B5CF6] transition-all"
                 required
               />
             </div>
           ) : (
             <div className="space-y-1.5 text-left">
-              <label className="block text-[11px] font-semibold text-[#111318] uppercase tracking-wider">
+              <label className="block text-[11px] font-mono font-medium text-[#9CA3AF] uppercase tracking-wider">
                 Upload {activeTab === 'image' ? 'Image (PNG, JPG, WEBP, SVG)' : 'PDF / File'}
               </label>
-              <div className="border border-dashed border-[#DCDDD9] bg-[#F6F5F2] hover:bg-white hover:border-[#111318] rounded-xl p-8 text-center cursor-pointer transition-all relative">
+              <div className="border border-dashed border-[#262830] bg-[#1E2026] hover:bg-[#23262F] hover:border-[#8B5CF6] rounded-xl p-8 text-center cursor-pointer transition-all relative">
                 <input
                   type="file"
                   accept={activeTab === 'image' ? 'image/*' : '.pdf,image/*'}
@@ -130,16 +132,16 @@ export const NewAnalysisPage: React.FC = () => {
                   required
                 />
                 {file ? (
-                  <p className="text-xs font-semibold text-[#111318] font-mono">{file.name}</p>
+                  <p className="text-xs font-semibold text-white font-mono">{file.name}</p>
                 ) : (
-                  <p className="text-xs text-[#666A73]">Click or drop file to start LAB color extraction</p>
+                  <p className="text-xs text-[#9CA3AF]">Click or drop file to start LAB color extraction</p>
                 )}
               </div>
             </div>
           )}
 
           {error && (
-            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-xs font-medium">
+            <div className="p-3 bg-rose-500/10 border border-rose-500/30 text-rose-300 rounded-lg text-xs font-medium">
               {error}
             </div>
           )}
@@ -147,14 +149,14 @@ export const NewAnalysisPage: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 px-5 text-xs font-semibold text-white bg-[#111318] hover:bg-[#252830] rounded-xl shadow-2xs transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
+            className="w-full py-3 px-5 text-xs font-semibold text-white bg-[#8B5CF6] hover:bg-[#7C3AED] rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
           >
             {isSubmitting ? (
               <span>Extracting colours...</span>
             ) : (
               <>
                 <span>Extract Colours</span>
-                <ArrowRight className="w-3.5 h-3.5 text-[#1677FF] group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-3.5 h-3.5 text-white group-hover:translate-x-1 transition-transform" />
               </>
             )}
           </button>

@@ -4,25 +4,53 @@
 
 @layer base {
   body {
-    background-color: #F6F5F2;
-    color: #111318;
+    background-color: #0C0D0E;
+    color: #F3F4F6;
     min-height: 100vh;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 }
 
-/* Studio Scrollbar */
+.font-cursive {
+  font-family: 'Caveat', cursive;
+}
+
+.font-serif-italic {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+}
+
+/* Studio Dark Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F6F5F2;
+  background: #0C0D0E;
 }
 ::-webkit-scrollbar-thumb {
-  background: #DCDDD9;
+  background: #262830;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #B5B7B0;
+  background: #8B5CF6;
+}
+
+/* Keyframes for subtle animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle glow utility */
+.glow-purple {
+  box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.25);
+}
+
+.glow-pink {
+  box-shadow: 0 0 25px -5px rgba(236, 72, 153, 0.25);
 }

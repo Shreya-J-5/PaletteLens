@@ -1,8 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface User {
+export interface User {
   name: string;
   email: string;
+}
+
+export interface RegisteredUser {
+  name: string;
+  email: string;
+  password?: string;
 }
 
 interface AuthContextType {
@@ -13,8 +19,8 @@ interface AuthContextType {
   authMode: 'login' | 'signup';
   trialLimitReachedMessage: string | null;
   isLogoutConfirmOpen: boolean;
-  login: (email: string, name?: string) => void;
-  signup: (name: string, email: string) => void;
+  login: (email: string, password?: string) => { success: boolean; error?: string };
+  signup: (name: string, email: string, password?: string) => { success: boolean; error?: string };
   requestLogout: () => void;
   confirmLogout: () => void;
   cancelLogout: () => void;
@@ -23,14 +29,24 @@ interface AuthContextType {
   closeAuthModal: () => void;
   trackAnalysisForUser: (analysisId: string) => void;
   getUserAnalysisIds: () => string[];
+  getRegisteredUsers: () => RegisteredUser[];
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const TRIALS_KEY = 'palettelens_trials_count';
 const USER_KEY = 'palettelens_user_session';
+const REGISTERED_USERS_KEY = 'palettelens_registered_users';
 const USER_ANALYSES_MAP_KEY = 'palettelens_user_analyses_map';
 const MAX_TRIALS = 3;
+
+const DEFAULT_USERS: Record<string, RegisteredUser> = {
+  'admin@palettelens.com': {
+    name: 'Admin Studio',
+    email: 'admin@palettelens.com',
+    password: 'password123',
+  },
+};
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
@@ -50,26 +66,81 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Logout confirmation modal state
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
 
+  // Helper to load registered users map
+  const getRegisteredUsersMap = (): Record<string, RegisteredUser> => {
+    const stored = localStorage.getItem(REGISTERED_USERS_KEY);
+    if (!stored) {
+      localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(DEFAULT_USERS));
+      return DEFAULT_USERS;
+    }
+    try {
+      const parsed = JSON.parse(stored);
+      return { ...DEFAULT_USERS, ...parsed };
+    } catch {
+      return DEFAULT_USERS;
+    }
+  };
+
   useEffect(() => {
     localStorage.setItem(TRIALS_KEY, trialsUsed.toString());
   }, [trialsUsed]);
 
-  const login = (email: string, name?: string) => {
+  const signup = (name: string, email: string, password?: string): { success: boolean; error?: string } => {
     const cleanEmail = email.toLowerCase().trim();
-    const newUser = { email: cleanEmail, name: name || cleanEmail.split('@')[0] };
-    setUser(newUser);
-    localStorage.setItem(USER_KEY, JSON.stringify(newUser));
+    if (!cleanEmail) {
+      return { success: false, error: 'Email address is required.' };
+    }
+    if (!name.trim()) {
+      return { success: false, error: 'Full name is required.' };
+    }
+
+    const regMap = getRegisteredUsersMap();
+    const newUserRecord: RegisteredUser = {
+      name: name.trim(),
+      email: cleanEmail,
+      password: password || '',
+    };
+
+    regMap[cleanEmail] = newUserRecord;
+    localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(regMap));
+
+    const sessionUser: User = { name: newUserRecord.name, email: cleanEmail };
+    setUser(sessionUser);
+    localStorage.setItem(USER_KEY, JSON.stringify(sessionUser));
     setIsAuthModalOpen(false);
     setTrialLimitReachedMessage(null);
+    return { success: true };
   };
 
-  const signup = (name: string, email: string) => {
+  const login = (email: string, password?: string): { success: boolean; error?: string } => {
     const cleanEmail = email.toLowerCase().trim();
-    const newUser = { name, email: cleanEmail };
-    setUser(newUser);
-    localStorage.setItem(USER_KEY, JSON.stringify(newUser));
+    if (!cleanEmail) {
+      return { success: false, error: 'Please enter your registered email address.' };
+    }
+
+    const regMap = getRegisteredUsersMap();
+    const registeredAccount = regMap[cleanEmail];
+
+    if (!registeredAccount) {
+      return {
+        success: false,
+        error: 'No account found with this email address. Please sign up first!',
+      };
+    }
+
+    if (password && registeredAccount.password && registeredAccount.password !== password) {
+      return {
+        success: false,
+        error: 'Incorrect password. Please verify your details or sign up with a new account.',
+      };
+    }
+
+    const sessionUser: User = { name: registeredAccount.name, email: cleanEmail };
+    setUser(sessionUser);
+    localStorage.setItem(USER_KEY, JSON.stringify(sessionUser));
     setIsAuthModalOpen(false);
     setTrialLimitReachedMessage(null);
+    return { success: true };
   };
 
   const requestLogout = () => {
@@ -140,6 +211,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return mapObj[currentAccountKey] || [];
   };
 
+  const getRegisteredUsers = (): RegisteredUser[] => {
+    const map = getRegisteredUsersMap();
+    return Object.values(map);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -160,6 +236,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         closeAuthModal,
         trackAnalysisForUser,
         getUserAnalysisIds,
+        getRegisteredUsers,
       }}
     >
       {children}
