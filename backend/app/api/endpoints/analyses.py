@@ -1,6 +1,7 @@
 import os
 import uuid
 import shutil
+import tempfile
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, BackgroundTasks, status
 from sqlalchemy.orm import Session
@@ -33,52 +34,64 @@ async def create_analysis(
             raise HTTPException(status_code=400, detail="A file upload is required for image/pdf/file analysis.")
 
     analysis_id = str(uuid.uuid4())
-    original_filename = None
+    original_filename = file.filename if file else None
 
-    db_analysis = Analysis(
-        id=analysis_id,
-        source_type=source_type,
-        source_url=source_url if source_type == "website" else None,
-        original_filename=file.filename if file else None,
-        status="pending",
-        progress_step="Source validated"
-    )
-    db.add(db_analysis)
-    db.flush()
-
-    if file:
-        original_filename = file.filename
-        file_ext = os.path.splitext(file.filename)[1]
-        saved_filename = f"upload_{analysis_id}{file_ext}"
-        os.makedirs(os.path.join(settings.UPLOADS_DIR, "files"), exist_ok=True)
-        file_path = os.path.join(settings.UPLOADS_DIR, "files", saved_filename)
-
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-
-        asset = AnalysisAsset(
-            id=str(uuid.uuid4()),
-            analysis_id=analysis_id,
-            file_path=file_path,
-            asset_type="original_upload"
-        )
-        db.add(asset)
-
-    db.commit()
-    db.refresh(db_analysis)
-
-    # Try Celery task dispatch, fallback to BackgroundTasks
     try:
-        process_analysis_task.delay(analysis_id)
-    except Exception:
-        # Fallback if Redis/Celery is not active in dev mode
-        background_tasks.add_task(run_analysis_pipeline, analysis_id)
+        db_analysis = Analysis(
+            id=analysis_id,
+            source_type=source_type,
+            source_url=source_url if source_type == "website" else None,
+            original_filename=original_filename,
+            status="pending",
+            progress_step="Source validated"
+        )
+        db.add(db_analysis)
+        db.flush()
 
-    return {
-        "id": analysis_id,
-        "status": "pending",
-        "progress_step": "Source validated"
-    }
+        if file:
+            file_ext = os.path.splitext(file.filename)[1] if file.filename else ".jpg"
+            saved_filename = f"upload_{analysis_id}{file_ext}"
+
+            # Attempt saving to primary UPLOADS_DIR, fallback to system temp directory
+            target_dir = os.path.join(settings.UPLOADS_DIR, "files")
+            try:
+                os.makedirs(target_dir, exist_ok=True)
+                file_path = os.path.join(target_dir, saved_filename)
+                with open(file_path, "wb") as buffer:
+                    shutil.copyfileobj(file.file, buffer)
+            except Exception:
+                tmp_dir = os.path.join(tempfile.gettempdir(), "palettelens_files")
+                os.makedirs(tmp_dir, exist_ok=True)
+                file_path = os.path.join(tmp_dir, saved_filename)
+                file.file.seek(0)
+                with open(file_path, "wb") as buffer:
+                    shutil.copyfileobj(file.file, buffer)
+
+            asset = AnalysisAsset(
+                id=str(uuid.uuid4()),
+                analysis_id=analysis_id,
+                file_path=file_path,
+                asset_type="original_upload"
+            )
+            db.add(asset)
+
+        db.commit()
+        db.refresh(db_analysis)
+
+        # Execute analysis pipeline in background task or immediately
+        try:
+            process_analysis_task.delay(analysis_id)
+        except Exception:
+            background_tasks.add_task(run_analysis_pipeline, analysis_id)
+
+        return {
+            "id": analysis_id,
+            "status": "pending",
+            "progress_step": "Source validated"
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to initialize analysis: {str(e)}")
 
 @router.get("", response_model=List[AnalysisResponse])
 def list_analyses(
@@ -108,7 +121,6 @@ def list_analyses(
     results = []
 
     for a in analyses:
-        # Calculate summary counts
         pages_count = len(a.pages)
         global_colours = [c for c in a.colours if c.page_id is None]
         colour_count = len(global_colours) if global_colours else len(a.colours)
@@ -146,8 +158,6 @@ def delete_analysis(analysis_id: str, db: Session = Depends(get_db)):
     if not analysis:
         raise HTTPException(status_code=404, detail="Analysis not found")
 
-    # Clean up associated files from disk
-    # 1. Clean screenshots
     for p in analysis.pages:
         if p.screenshot_path:
             abs_p = os.path.join(settings.UPLOADS_DIR, p.screenshot_path)
@@ -157,7 +167,6 @@ def delete_analysis(analysis_id: str, db: Session = Depends(get_db)):
                 except Exception:
                     pass
 
-    # 2. Clean assets
     for asset in analysis.assets:
         if asset.file_path and os.path.exists(asset.file_path):
             try:
@@ -165,7 +174,6 @@ def delete_analysis(analysis_id: str, db: Session = Depends(get_db)):
             except Exception:
                 pass
 
-    # Cascading delete in PostgreSQL/SQLAlchemy
     db.delete(analysis)
     db.commit()
 

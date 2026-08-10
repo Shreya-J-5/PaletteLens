@@ -8,8 +8,11 @@ from app.api.router import api_router
 from app.db.database import engine, Base
 import app.models # Ensure all models are registered
 
-# Automatically create tables if not present (Alembic handles migrations in prod)
-Base.metadata.create_all(bind=engine)
+# Automatically create tables if not present
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"Warning: Base.metadata.create_all error: {e}")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -27,9 +30,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Ensure uploads directory exists and mount static endpoint
-os.makedirs(settings.UPLOADS_DIR, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=settings.UPLOADS_DIR), name="uploads")
+# Ensure uploads directory exists and mount static endpoint safely
+try:
+    os.makedirs(settings.UPLOADS_DIR, exist_ok=True)
+    app.mount("/uploads", StaticFiles(directory=settings.UPLOADS_DIR), name="uploads")
+except Exception as e:
+    print(f"Warning: Could not mount static uploads directory: {e}")
 
 # Register API routes
 app.include_router(api_router, prefix=settings.API_V1_STR)
