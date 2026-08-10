@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Globe, Image as ImageIcon, FileText, ArrowLeft } from 'lucide-react';
+import { Globe, Image as ImageIcon, FileText, ArrowLeft, ArrowRight } from 'lucide-react';
 import { createWebsiteAnalysis, createFileUploadAnalysis } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
@@ -49,71 +49,79 @@ export const NewAnalysisPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4 space-y-6">
+    <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 space-y-6">
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#666A73] hover:text-[#111318] transition-colors"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-3.5 h-3.5" />
         Back
       </button>
 
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">New Colour Analysis</h1>
-        <p className="text-sm text-slate-500">Extract dominant colours and design system palettes</p>
+      <div className="space-y-1">
+        <h1 className="text-2xl font-extrabold text-[#111318] tracking-tight">New Colour Analysis</h1>
+        <p className="text-xs text-[#666A73]">Extract dominant colours and production design system palettes</p>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
-        <div className="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-xl text-xs font-semibold">
+      <div className="bg-white border border-[#DCDDD9] rounded-2xl p-6 sm:p-8 shadow-2xs space-y-6">
+        <div className="grid grid-cols-3 gap-1.5 bg-[#F6F5F2] border border-[#DCDDD9] p-1 rounded-xl text-xs font-medium">
           <button
             type="button"
             onClick={() => setActiveTab('website')}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-lg transition-all ${
-              activeTab === 'website' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-600'
+            className={`flex items-center justify-center gap-1.5 py-2.5 rounded-lg transition-all ${
+              activeTab === 'website'
+                ? 'bg-white text-[#111318] border border-[#DCDDD9] shadow-2xs font-semibold'
+                : 'text-[#666A73] hover:text-[#111318]'
             }`}
           >
-            <Globe className="w-4 h-4 text-sky-600" />
+            <Globe className="w-3.5 h-3.5 text-[#1677FF]" />
             Website
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('image')}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-lg transition-all ${
-              activeTab === 'image' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-600'
+            className={`flex items-center justify-center gap-1.5 py-2.5 rounded-lg transition-all ${
+              activeTab === 'image'
+                ? 'bg-white text-[#111318] border border-[#DCDDD9] shadow-2xs font-semibold'
+                : 'text-[#666A73] hover:text-[#111318]'
             }`}
           >
-            <ImageIcon className="w-4 h-4 text-indigo-600" />
+            <ImageIcon className="w-3.5 h-3.5 text-[#111318]" />
             Image
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('file')}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-lg transition-all ${
-              activeTab === 'file' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-600'
+            className={`flex items-center justify-center gap-1.5 py-2.5 rounded-lg transition-all ${
+              activeTab === 'file'
+                ? 'bg-white text-[#111318] border border-[#DCDDD9] shadow-2xs font-semibold'
+                : 'text-[#666A73] hover:text-[#111318]'
             }`}
           >
-            <FileText className="w-4 h-4 text-emerald-600" />
+            <FileText className="w-3.5 h-3.5 text-[#111318]" />
             PDF / File
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {activeTab === 'website' ? (
-            <div className="space-y-2">
-              <label className="block text-xs font-medium text-slate-700">Website URL</label>
+            <div className="space-y-1.5 text-left">
+              <label className="block text-[11px] font-semibold text-[#111318] uppercase tracking-wider">Target Website Address</label>
               <input
                 type="url"
-                placeholder="https://nike.com"
+                placeholder="https://example.com"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-900"
+                className="w-full px-4 py-2.5 bg-[#F6F5F2] border border-[#DCDDD9] rounded-xl text-[#111318] placeholder:text-[#8A8F98] text-xs font-mono focus:outline-none focus:border-[#111318] focus:bg-white transition-all"
                 required
               />
             </div>
           ) : (
-            <div className="space-y-2">
-              <label className="block text-xs font-medium text-slate-700">Upload File</label>
-              <div className="border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-slate-100/60 rounded-xl p-8 text-center cursor-pointer relative">
+            <div className="space-y-1.5 text-left">
+              <label className="block text-[11px] font-semibold text-[#111318] uppercase tracking-wider">
+                Upload {activeTab === 'image' ? 'Image (PNG, JPG, WEBP, SVG)' : 'PDF / File'}
+              </label>
+              <div className="border border-dashed border-[#DCDDD9] bg-[#F6F5F2] hover:bg-white hover:border-[#111318] rounded-xl p-8 text-center cursor-pointer transition-all relative">
                 <input
                   type="file"
                   accept={activeTab === 'image' ? 'image/*' : '.pdf,image/*'}
@@ -122,16 +130,16 @@ export const NewAnalysisPage: React.FC = () => {
                   required
                 />
                 {file ? (
-                  <p className="text-sm font-semibold text-slate-900 font-mono">{file.name}</p>
+                  <p className="text-xs font-semibold text-[#111318] font-mono">{file.name}</p>
                 ) : (
-                  <p className="text-sm text-slate-600">Click or drag file to start extraction</p>
+                  <p className="text-xs text-[#666A73]">Click or drop file to start LAB color extraction</p>
                 )}
               </div>
             </div>
           )}
 
           {error && (
-            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-xs">
+            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-xs font-medium">
               {error}
             </div>
           )}
@@ -139,9 +147,16 @@ export const NewAnalysisPage: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3.5 px-6 font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-3 px-5 text-xs font-semibold text-white bg-[#111318] hover:bg-[#252830] rounded-xl shadow-2xs transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
           >
-            {isSubmitting ? 'Starting engine...' : 'Extract Colours'}
+            {isSubmitting ? (
+              <span>Extracting colours...</span>
+            ) : (
+              <>
+                <span>Extract Colours</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#1677FF] group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
           </button>
         </form>
       </div>

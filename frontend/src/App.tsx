@@ -19,7 +19,7 @@ export const App: React.FC = () => {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
+        <div className="min-h-screen bg-[#F6F5F2] text-[#111318] flex flex-col font-sans antialiased">
           <Navbar />
           <AuthModal />
           <LogoutConfirmModal />

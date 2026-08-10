@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Globe, Image as ImageIcon, FileText, File, ArrowRight } from 'lucide-react';
+import { Globe, Image as ImageIcon, FileText, ArrowRight, Copy, Check } from 'lucide-react';
 import { createWebsiteAnalysis, createFileUploadAnalysis } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
@@ -13,6 +13,7 @@ export const LandingPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copiedHex, setCopiedHex] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,61 +50,75 @@ export const LandingPage: React.FC = () => {
     }
   };
 
+  const samplePalette = [
+    { hex: '#111318', rgb: 'rgb(17, 19, 24)', name: 'Obsidian' },
+    { hex: '#F4F1EA', rgb: 'rgb(244, 241, 234)', name: 'Alabaster' },
+    { hex: '#1677FF', rgb: 'rgb(22, 119, 255)', name: 'Electric Blue' },
+    { hex: '#D9D2C5', rgb: 'rgb(217, 210, 197)', name: 'Warm Sand' },
+    { hex: '#8A8F98', rgb: 'rgb(138, 143, 152)', name: 'Studio Slate' }
+  ];
+
+  const handleCopySample = (hex: string) => {
+    navigator.clipboard.writeText(hex);
+    setCopiedHex(hex);
+    setTimeout(() => setCopiedHex(null), 1500);
+  };
+
   return (
-    <div className="flex-1 flex flex-col justify-center items-center w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 my-auto text-center">
+    <div className="flex-1 flex flex-col justify-center items-center w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-12 my-auto text-center">
       
-      {/* 1. Headline & Description Hero Group */}
+      {/* Hero Headline & Description */}
       <div className="space-y-4 max-w-2xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
-          Extract the <span className="text-sky-600">colours</span> behind<br className="hidden sm:inline" /> any design.
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111318] tracking-tight leading-[1.12]">
+          Extract the <span className="text-[#1677FF]">colours</span> behind<br className="hidden sm:inline" /> any design.
         </h1>
 
-        <p className="text-sm sm:text-base text-slate-600 max-w-lg mx-auto font-normal leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#666A73] max-w-lg mx-auto font-normal leading-relaxed">
           Analyze websites, images, PDFs, and visual files to discover the exact colours genuinely used in production.
         </p>
       </div>
 
-      {/* 2. Main Analysis Card */}
-      <div className="mt-8 sm:mt-9 bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-sm max-w-xl mx-auto w-full space-y-5 text-left">
+      {/* Main Studio Tool Panel */}
+      <div className="mt-9 bg-white border border-[#DCDDD9] rounded-2xl p-6 sm:p-7 shadow-[0_4px_24px_rgba(0,0,0,0.03)] max-w-xl mx-auto w-full space-y-5 text-left">
         
-        {/* Source Type Selector */}
-        <div className="grid grid-cols-3 gap-2 bg-slate-100/90 p-1.5 rounded-xl text-xs font-semibold">
+        {/* Studio Segmented Tool Mode Control */}
+        <div className="grid grid-cols-3 gap-1.5 bg-[#F6F5F2] border border-[#DCDDD9] p-1 rounded-xl text-xs font-medium">
           <button
             type="button"
             onClick={() => setActiveTab('website')}
-            className={`flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all ${
               activeTab === 'website'
-                ? 'bg-white text-slate-900 shadow-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-white text-[#111318] border border-[#DCDDD9] shadow-2xs font-semibold'
+                : 'text-[#666A73] hover:text-[#111318]'
             }`}
           >
-            <Globe className="w-3.5 h-3.5 text-sky-600" />
+            <Globe className="w-3.5 h-3.5 text-[#1677FF]" />
             Website URL
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('image')}
-            className={`flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all ${
               activeTab === 'image'
-                ? 'bg-white text-slate-900 shadow-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-white text-[#111318] border border-[#DCDDD9] shadow-2xs font-semibold'
+                : 'text-[#666A73] hover:text-[#111318]'
             }`}
           >
-            <ImageIcon className="w-3.5 h-3.5 text-indigo-600" />
+            <ImageIcon className="w-3.5 h-3.5 text-[#111318]" />
             Upload Image
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('file')}
-            className={`flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all ${
               activeTab === 'file'
-                ? 'bg-white text-slate-900 shadow-sm font-bold'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-white text-[#111318] border border-[#DCDDD9] shadow-2xs font-semibold'
+                : 'text-[#666A73] hover:text-[#111318]'
             }`}
           >
-            <FileText className="w-3.5 h-3.5 text-emerald-600" />
+            <FileText className="w-3.5 h-3.5 text-[#111318]" />
             Upload PDF / File
           </button>
         </div>
@@ -111,22 +126,24 @@ export const LandingPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {activeTab === 'website' ? (
             <div className="space-y-1.5 text-left">
-              <label className="block text-xs font-semibold text-slate-700">Target Website Address</label>
+              <label className="block text-xs font-semibold text-[#111318] uppercase tracking-wider text-[11px]">
+                Target Website Address
+              </label>
               <input
                 type="url"
                 placeholder="https://example.com"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all font-mono"
+                className="w-full px-4 py-2.5 bg-[#F6F5F2] border border-[#DCDDD9] rounded-xl text-[#111318] placeholder:text-[#8A8F98] text-xs focus:outline-none focus:border-[#111318] focus:bg-white transition-all font-mono"
                 required
               />
             </div>
           ) : (
             <div className="space-y-1.5 text-left">
-              <label className="block text-xs font-semibold text-slate-700">
+              <label className="block text-xs font-semibold text-[#111318] uppercase tracking-wider text-[11px]">
                 Select {activeTab === 'image' ? 'Image (PNG, JPG, WEBP, SVG)' : 'PDF or Visual File'}
               </label>
-              <div className="border-2 border-dashed border-slate-200 bg-slate-50/50 hover:bg-slate-50 rounded-xl p-5 text-center cursor-pointer transition-colors relative">
+              <div className="border border-dashed border-[#DCDDD9] bg-[#F6F5F2] hover:bg-white hover:border-[#111318] rounded-xl p-5 text-center cursor-pointer transition-all relative">
                 <input
                   type="file"
                   accept={activeTab === 'image' ? 'image/*' : '.pdf,image/*'}
@@ -135,15 +152,15 @@ export const LandingPage: React.FC = () => {
                   required
                 />
                 <div className="space-y-1.5">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center mx-auto">
+                  <div className="w-8 h-8 rounded-lg bg-white border border-[#DCDDD9] text-[#111318] flex items-center justify-center mx-auto shadow-2xs">
                     {activeTab === 'image' ? <ImageIcon className="w-4 h-4" /> : <FileText className="w-4 h-4" />}
                   </div>
                   {file ? (
-                    <p className="text-xs font-semibold text-slate-900 font-mono">{file.name}</p>
+                    <p className="text-xs font-semibold text-[#111318] font-mono">{file.name}</p>
                   ) : (
                     <div>
-                      <p className="text-xs font-medium text-slate-700">Click to browse or drop file here</p>
-                      <p className="text-[11px] text-slate-400">Supports PNG, JPG, WEBP, GIF, SVG, PDF (Up to 50MB)</p>
+                      <p className="text-xs font-medium text-[#111318]">Click to browse or drop file here</p>
+                      <p className="text-[11px] text-[#666A73]">Supports PNG, JPG, WEBP, SVG, PDF (Up to 50MB)</p>
                     </div>
                   )}
                 </div>
@@ -160,45 +177,49 @@ export const LandingPage: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 px-5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
+            className="w-full py-3 px-5 text-xs font-semibold text-white bg-[#111318] hover:bg-[#252830] rounded-xl shadow-2xs transition-all flex items-center justify-center gap-2 group disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? (
-              <span>Creating analysis...</span>
+              <span>Extracting genuine colors...</span>
             ) : (
               <>
                 <span>Analyze Palette</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#1677FF] group-hover:translate-x-1 transition-transform" />
               </>
             )}
           </button>
         </form>
       </div>
 
-      {/* 3. Supporting Content directly beneath Card */}
-      <div className="mt-10 sm:mt-12 space-y-3 text-slate-500">
-        <p className="text-xs font-medium text-slate-400">
-          Supports all major formats
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-xs font-medium text-slate-600">
-          <div className="flex items-center gap-1.5">
-            <Globe className="w-3.5 h-3.5 text-sky-600" />
-            <span>Websites</span>
-          </div>
-          <span className="text-slate-300">|</span>
-          <div className="flex items-center gap-1.5">
-            <ImageIcon className="w-3.5 h-3.5 text-indigo-600" />
-            <span>Images</span>
-          </div>
-          <span className="text-slate-300">|</span>
-          <div className="flex items-center gap-1.5">
-            <FileText className="w-3.5 h-3.5 text-emerald-600" />
-            <span>PDFs</span>
-          </div>
-          <span className="text-slate-300">|</span>
-          <div className="flex items-center gap-1.5">
-            <File className="w-3.5 h-3.5 text-slate-500" />
-            <span>Other Files</span>
-          </div>
+      {/* Result Preview Teaser Component */}
+      <div className="mt-12 w-full max-w-xl mx-auto space-y-3">
+        <div className="flex items-center justify-between text-[11px] font-semibold text-[#666A73] uppercase tracking-wider px-1">
+          <span>Extracted Palette Teaser</span>
+          <span className="text-[#8A8F98] font-normal">Perceptual LAB Swatches</span>
+        </div>
+
+        <div className="grid grid-cols-5 gap-2 bg-white border border-[#DCDDD9] rounded-xl p-3 shadow-2xs">
+          {samplePalette.map((color) => (
+            <div
+              key={color.hex}
+              onClick={() => handleCopySample(color.hex)}
+              className="group cursor-pointer flex flex-col items-center space-y-1.5 p-1.5 rounded-lg hover:bg-[#F6F5F2] transition-colors"
+              title={`Click to copy ${color.hex}`}
+            >
+              <div
+                className="w-full h-10 rounded-md border border-[#DCDDD9]/80 shadow-2xs group-hover:scale-105 transition-transform"
+                style={{ backgroundColor: color.hex }}
+              />
+              <div className="text-[10px] font-mono text-[#111318] font-medium flex items-center gap-1">
+                <span>{color.hex}</span>
+                {copiedHex === color.hex ? (
+                  <Check className="w-2.5 h-2.5 text-emerald-600" />
+                ) : (
+                  <Copy className="w-2.5 h-2.5 text-[#8A8F98] opacity-0 group-hover:opacity-100 transition-opacity" />
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

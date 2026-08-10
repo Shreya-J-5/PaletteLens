@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, PlusCircle, History, Settings, Palette, Globe, Image, FileText } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, Globe, Image, FileText } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const navItems = [
@@ -9,13 +9,13 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="w-64 bg-white border-r border-slate-200 flex-shrink-0 flex flex-col justify-between hidden md:flex min-h-[calc(100vh-4rem)]">
+    <aside className="w-64 bg-[#F6F5F2] border-r border-[#DCDDD9] flex-shrink-0 flex flex-col justify-between hidden md:flex min-h-[calc(100vh-3.5rem)]">
       <div className="p-4 space-y-6">
-        <div className="px-3 py-2">
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <div className="px-2 py-1">
+          <h2 className="text-[11px] font-semibold text-[#8A8F98] uppercase tracking-wider">
             Workspace
           </h2>
-          <nav className="mt-3 space-y-1">
+          <nav className="mt-2 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -23,14 +23,14 @@ export const Sidebar: React.FC = () => {
                   key={item.path}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    `flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                       isActive
-                        ? 'bg-slate-100 text-slate-900 font-semibold'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                        ? 'bg-white text-[#111318] border border-[#DCDDD9] shadow-2xs font-semibold'
+                        : 'text-[#666A73] hover:text-[#111318] hover:bg-[#EBEAE5]'
                     }`
                   }
                 >
-                  <Icon className="w-4 h-4 text-slate-500" />
+                  <Icon className="w-4 h-4 text-[#666A73]" />
                   {item.label}
                 </NavLink>
               );
@@ -38,35 +38,35 @@ export const Sidebar: React.FC = () => {
           </nav>
         </div>
 
-        <div className="px-3 py-2">
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            Analysis Types
+        <div className="px-2 py-1">
+          <h2 className="text-[11px] font-semibold text-[#8A8F98] uppercase tracking-wider">
+            Analysis Engines
           </h2>
-          <div className="mt-3 space-y-2 text-xs text-slate-500">
-            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded bg-slate-50 text-slate-700">
-              <Globe className="w-3.5 h-3.5 text-sky-500" />
+          <div className="mt-2.5 space-y-1.5 text-xs text-[#666A73]">
+            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white border border-[#DCDDD9] text-[#111318] text-[11px]">
+              <Globe className="w-3.5 h-3.5 text-[#1677FF]" />
               Website Crawling
             </div>
-            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded bg-slate-50 text-slate-700">
-              <Image className="w-3.5 h-3.5 text-indigo-500" />
-              Image Downsampling & LAB
+            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white border border-[#DCDDD9] text-[#111318] text-[11px]">
+              <Image className="w-3.5 h-3.5 text-[#111318]" />
+              Image LAB Clustering
             </div>
-            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded bg-slate-50 text-slate-700">
-              <FileText className="w-3.5 h-3.5 text-emerald-500" />
-              PDF Rendering
+            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white border border-[#DCDDD9] text-[#111318] text-[11px]">
+              <FileText className="w-3.5 h-3.5 text-[#111318]" />
+              PDF Visual Extraction
             </div>
           </div>
         </div>
       </div>
 
-      <div className="p-4 border-t border-slate-200">
-        <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200/80">
-          <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
+      <div className="p-3 border-t border-[#DCDDD9]">
+        <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-white border border-[#DCDDD9] shadow-2xs">
+          <div className="w-7 h-7 rounded bg-[#111318] text-white flex items-center justify-center font-mono font-bold text-[10px]">
             PL
           </div>
           <div className="overflow-hidden">
-            <p className="text-xs font-semibold text-slate-900 truncate">PaletteLens Engine</p>
-            <p className="text-[11px] text-slate-500 truncate">Status: Active</p>
+            <p className="text-xs font-semibold text-[#111318] truncate">PaletteLens Engine</p>
+            <p className="text-[10px] text-[#666A73] truncate">Status: Studio Ready</p>
           </div>
         </div>
       </div>
