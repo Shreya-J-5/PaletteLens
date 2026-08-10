@@ -1,0 +1,22 @@
+# Node / Frontend
+node_modules
+frontend/node_modules
+frontend/dist
+frontend/.vite
+
+# Python / Backend
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+backend/venv
+backend/palettelens.db
+backend/alembic/versions/*.pyc
+
+# Environment & Misc
+.env
+.env.local
+.DS_Store
+.vscode
+.idea
+*.log
