@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Globe, Image as ImageIcon, FileText, ArrowRight, Copy, Check } from 'lucide-react';
+import { Globe, Image as ImageIcon, FileText, ArrowRight, Sparkles, Paintbrush, Compass } from 'lucide-react';
 import { createWebsiteAnalysis, createFileUploadAnalysis } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
@@ -13,7 +13,6 @@ export const LandingPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [copiedHex, setCopiedHex] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,27 +49,65 @@ export const LandingPage: React.FC = () => {
     }
   };
 
-  const samplePalette = [
-    { hex: '#111318', rgb: 'rgb(17, 19, 24)', name: 'Obsidian' },
-    { hex: '#F4F1EA', rgb: 'rgb(244, 241, 234)', name: 'Alabaster' },
-    { hex: '#1677FF', rgb: 'rgb(22, 119, 255)', name: 'Electric Blue' },
-    { hex: '#D9D2C5', rgb: 'rgb(217, 210, 197)', name: 'Warm Sand' },
-    { hex: '#8A8F98', rgb: 'rgb(138, 143, 152)', name: 'Studio Slate' }
-  ];
-
-  const handleCopySample = (hex: string) => {
-    navigator.clipboard.writeText(hex);
-    setCopiedHex(hex);
-    setTimeout(() => setCopiedHex(null), 1500);
-  };
-
   return (
-    <div className="flex-1 flex flex-col justify-center items-center w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-12 my-auto text-center">
+    <div className="flex-1 flex flex-col justify-center items-center w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-10 my-auto text-center relative">
       
-      {/* Hero Headline & Description */}
-      <div className="space-y-4 max-w-2xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111318] tracking-tight leading-[1.12]">
-          Extract the <span className="text-[#1677FF]">colours</span> behind<br className="hidden sm:inline" /> any design.
+      {/* Studio Artboard Corner Crosshairs (+) */}
+      <div className="absolute top-4 left-4 text-[#DCDDD9] font-mono text-xs select-none pointer-events-none">+</div>
+      <div className="absolute top-4 right-4 text-[#DCDDD9] font-mono text-xs select-none pointer-events-none">+</div>
+      <div className="absolute bottom-4 left-4 text-[#DCDDD9] font-mono text-xs select-none pointer-events-none">+</div>
+      <div className="absolute bottom-4 right-4 text-[#DCDDD9] font-mono text-xs select-none pointer-events-none">+</div>
+
+      {/* Designer Micro-Badge with Hand-drawn Sparkle */}
+      <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-[#DCDDD9] rounded-full text-[11px] font-medium text-[#111318] shadow-2xs mb-6">
+        <Sparkles className="w-3.5 h-3.5 text-[#1677FF]" />
+        <span>Crafted for Art Directors, Designers & Visual Creators</span>
+        <svg className="w-3.5 h-3.5 text-[#666A73]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 19l7-7-7-7M5 12h14" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+
+      {/* Hero Headline & Description with Hand-Drawn Underline Doodle */}
+      <div className="space-y-4 max-w-2xl mx-auto relative">
+        
+        {/* Floating Sketch Doodle Star (Left) */}
+        <div className="absolute -top-6 -left-8 text-[#1677FF]/40 hidden sm:block">
+          <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+
+        {/* Floating Sketch Swatch Doodle (Right) */}
+        <div className="absolute -bottom-2 -right-10 text-[#666A73]/30 hidden sm:block">
+          <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+            <rect x="14" y="14" width="7" height="7" rx="1.5" />
+          </svg>
+        </div>
+
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111318] tracking-tight leading-[1.15]">
+          Extract the{' '}
+          <span className="relative inline-block text-[#1677FF]">
+            colours
+            {/* Hand-Drawn Wavy Underline Doodle SVG */}
+            <svg
+              className="absolute -bottom-2 left-0 w-full h-3 text-[#1677FF]"
+              viewBox="0 0 120 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 8C25 2 55 11 85 4C98 1 112 7 117 8"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>{' '}
+          behind<br className="hidden sm:inline" /> any design.
         </h1>
 
         <p className="text-xs sm:text-sm text-[#666A73] max-w-lg mx-auto font-normal leading-relaxed">
@@ -79,8 +116,16 @@ export const LandingPage: React.FC = () => {
       </div>
 
       {/* Main Studio Tool Panel */}
-      <div className="mt-9 bg-white border border-[#DCDDD9] rounded-2xl p-6 sm:p-7 shadow-[0_4px_24px_rgba(0,0,0,0.03)] max-w-xl mx-auto w-full space-y-5 text-left">
+      <div className="mt-8 bg-white border border-[#DCDDD9] rounded-2xl p-6 sm:p-7 shadow-[0_4px_24px_rgba(0,0,0,0.03)] max-w-xl mx-auto w-full space-y-5 text-left relative">
         
+        {/* Playful Handwritten Doodle Note pointing to tool */}
+        <div className="absolute -top-7 right-3 hidden sm:flex items-center gap-1.5 text-[11px] font-mono italic text-[#666A73]">
+          <span>drop target URL or file below</span>
+          <svg className="w-4 h-4 text-[#1677FF] rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 5v14M5 12l7 7 7-7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+
         {/* Studio Segmented Tool Mode Control */}
         <div className="grid grid-cols-3 gap-1.5 bg-[#F6F5F2] border border-[#DCDDD9] p-1 rounded-xl text-xs font-medium">
           <button
@@ -191,35 +236,21 @@ export const LandingPage: React.FC = () => {
         </form>
       </div>
 
-      {/* Result Preview Teaser Component */}
-      <div className="mt-12 w-full max-w-xl mx-auto space-y-3">
-        <div className="flex items-center justify-between text-[11px] font-semibold text-[#666A73] uppercase tracking-wider px-1">
-          <span>Extracted Palette Teaser</span>
-          <span className="text-[#8A8F98] font-normal">Perceptual LAB Swatches</span>
+      {/* Designer Studio Micro-Callout Footer Bar */}
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-[11px] font-mono text-[#666A73]">
+        <div className="flex items-center gap-1.5">
+          <Paintbrush className="w-3.5 h-3.5 text-[#1677FF]" />
+          <span>CIELAB Perceptual Clustering</span>
         </div>
-
-        <div className="grid grid-cols-5 gap-2 bg-white border border-[#DCDDD9] rounded-xl p-3 shadow-2xs">
-          {samplePalette.map((color) => (
-            <div
-              key={color.hex}
-              onClick={() => handleCopySample(color.hex)}
-              className="group cursor-pointer flex flex-col items-center space-y-1.5 p-1.5 rounded-lg hover:bg-[#F6F5F2] transition-colors"
-              title={`Click to copy ${color.hex}`}
-            >
-              <div
-                className="w-full h-10 rounded-md border border-[#DCDDD9]/80 shadow-2xs group-hover:scale-105 transition-transform"
-                style={{ backgroundColor: color.hex }}
-              />
-              <div className="text-[10px] font-mono text-[#111318] font-medium flex items-center gap-1">
-                <span>{color.hex}</span>
-                {copiedHex === color.hex ? (
-                  <Check className="w-2.5 h-2.5 text-emerald-600" />
-                ) : (
-                  <Copy className="w-2.5 h-2.5 text-[#8A8F98] opacity-0 group-hover:opacity-100 transition-opacity" />
-                )}
-              </div>
-            </div>
-          ))}
+        <span className="text-[#DCDDD9]">•</span>
+        <div className="flex items-center gap-1.5">
+          <Compass className="w-3.5 h-3.5 text-[#111318]" />
+          <span>DOM Computed CSS & Pixel Analysis</span>
+        </div>
+        <span className="text-[#DCDDD9]">•</span>
+        <div className="flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-[#1677FF]" />
+          <span>Export CSS, Tailwind & JSON</span>
         </div>
       </div>
 
