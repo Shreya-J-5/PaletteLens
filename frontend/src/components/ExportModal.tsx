@@ -55,7 +55,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
       <div className="bg-[#16171B] border border-[#262830] rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden text-white flex flex-col max-h-[85vh] glow-purple">
         {/* Header */}
-        <div className="p-5 border-b border-[#262830] flex items-center justify-between">
+        <div className="p-5 border-b border-[#262830] flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-[#1E2026] border border-[#262830] text-[#8B5CF6] flex items-center justify-center">
               <Download className="w-4 h-4 text-[#8B5CF6]" />
@@ -73,7 +73,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
         </div>
 
         {/* Tab switcher */}
-        <div className="flex border-b border-[#262830] bg-[#1E2026] px-5 pt-3 gap-2 overflow-x-auto">
+        <div className="flex border-b border-[#262830] bg-[#1E2026] px-5 pt-3 gap-2 overflow-x-auto flex-shrink-0">
           <button
             onClick={() => setActiveTab('css')}
             className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-all ${
@@ -124,9 +124,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({
         </div>
 
         {/* Tab Body */}
-        <div className="p-6 flex-1 overflow-y-auto">
+        <div className="p-6 flex-1 overflow-y-auto min-h-0">
           {activeTab !== 'png' ? (
-            <div className="relative bg-[#0C0D0E] border border-[#262830] rounded-xl p-4 overflow-x-auto text-[#F3F4F6] font-mono text-xs shadow-inner">
+            <div className="relative bg-[#0C0D0E] border border-[#262830] rounded-xl p-4 overflow-auto max-h-[50vh] text-[#F3F4F6] font-mono text-xs shadow-inner">
               <button
                 onClick={handleCopy}
                 className="absolute top-3 right-3 px-3 py-1.5 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white rounded-lg text-xs font-sans font-semibold flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
