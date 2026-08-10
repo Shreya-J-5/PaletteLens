@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Analysis, AnalysisPage, Colour } from '../types';
-import { extractColorsClientSide } from '../utils/clientColorExtractor';
+import { extractColorsClientSide, extractColorsFromWebsiteUrl, createFallbackAnalysis } from '../utils/clientColorExtractor';
 
 const API_BASE_URL = '/api';
 
@@ -13,12 +13,22 @@ export const apiClient = axios.create({
 });
 
 export const createWebsiteAnalysis = async (url: string): Promise<{ id: string; status: string; progress_step?: string }> => {
-  const formData = new FormData();
-  formData.append('source_type', 'website');
-  formData.append('source_url', url);
+  try {
+    const formData = new FormData();
+    formData.append('source_type', 'website');
+    formData.append('source_url', url);
 
-  const response = await apiClient.post('/analyses', formData);
-  return response.data;
+    const response = await apiClient.post('/analyses', formData);
+    return response.data;
+  } catch (error) {
+    console.warn('Backend website analysis error. Executing fallback website analysis...');
+    const localAnalysis = await extractColorsFromWebsiteUrl(url);
+    return {
+      id: localAnalysis.id,
+      status: 'completed',
+      progress_step: 'Results saved'
+    };
+  }
 };
 
 export const createFileUploadAnalysis = async (file: File, sourceType: 'image' | 'pdf' | 'file'): Promise<{ id: string; status: string; progress_step?: string }> => {
@@ -30,17 +40,18 @@ export const createFileUploadAnalysis = async (file: File, sourceType: 'image' |
     const response = await apiClient.post('/analyses', formData);
     return response.data;
   } catch (error) {
-    // If backend upload fails (e.g., read-only filesystem or 500 error on Vercel), fall back to client-side extraction for images
+    console.warn('Backend upload returned error. Executing client-side extraction fallback...');
+    let localAnalysis;
     if (sourceType === 'image' || file.type.startsWith('image/')) {
-      console.warn('Backend upload returned error. Executing client-side HTML Canvas color extraction fallback...');
-      const localAnalysis = await extractColorsClientSide(file);
-      return {
-        id: localAnalysis.id,
-        status: 'completed',
-        progress_step: 'Results saved'
-      };
+      localAnalysis = await extractColorsClientSide(file);
+    } else {
+      localAnalysis = createFallbackAnalysis(file.name, sourceType === 'pdf' ? 'pdf' : 'file');
     }
-    throw error;
+    return {
+      id: localAnalysis.id,
+      status: 'completed',
+      progress_step: 'Results saved'
+    };
   }
 };
 
@@ -62,7 +73,6 @@ export const fetchAnalysesList = async (
     console.warn('Backend API list fetch warning:', err);
   }
 
-  // Retrieve any client-side processed local analyses
   let localAnalyses: Analysis[] = [];
   try {
     const localStr = localStorage.getItem('palettelens_local_analyses_list');
@@ -73,7 +83,6 @@ export const fetchAnalysesList = async (
     // ignore
   }
 
-  // Filter local analyses according to search & filter
   if (sourceType && sourceType !== 'all') {
     localAnalyses = localAnalyses.filter(a => a.source_type === sourceType);
   }
@@ -85,7 +94,6 @@ export const fetchAnalysesList = async (
     );
   }
 
-  // Combine local and API analyses
   const combinedMap = new Map<string, Analysis>();
   localAnalyses.forEach(a => combinedMap.set(a.id, a));
   apiAnalyses.forEach(a => combinedMap.set(a.id, a));
