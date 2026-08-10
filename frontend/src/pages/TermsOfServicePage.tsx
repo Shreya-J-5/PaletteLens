@@ -1,62 +1,75 @@
 import React from 'react';
-import { FileText, CheckCircle2, AlertCircle, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Sparkles, CheckCircle2, Globe2, Palette } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const TermsOfServicePage: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-6 flex-1 flex flex-col justify-center">
+      
+      {/* Back Button */}
       <Link
         to="/"
-        className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors self-start"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-3.5 h-3.5" />
         Back to Home
       </Link>
 
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold border border-indigo-200">
-          <FileText className="w-3.5 h-3.5" />
-          <span>Terms of Service</span>
+      {/* Header */}
+      <div className="space-y-1">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          Terms & Usage Guidelines
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-500 font-normal">
+          Simple, transparent guidelines created for designers and developers.
+        </p>
+      </div>
+
+      {/* Designer-Centric 2x2 Grid Card */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-2">
+          <div className="flex items-center gap-2 text-sky-600">
+            <Palette className="w-4 h-4" />
+            <h3 className="text-sm font-bold text-slate-900">Built for Creative Work</h3>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            PaletteLens provides genuine visual color extraction tools for designers, studios, and engineers to discover production colors without manual eye-dropping.
+          </p>
         </div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Terms & Usage Guidelines</h1>
-        <p className="text-sm text-slate-500">Effective Date: August 2026</p>
+
+        <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-2">
+          <div className="flex items-center gap-2 text-indigo-600">
+            <Sparkles className="w-4 h-4" />
+            <h3 className="text-sm font-bold text-slate-900">3 Free Trials & Account Access</h3>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Guests receive 3 free color analyses. Beyond 3 trials, create a free account or log in to unlock unlimited palette extractions and personal history.
+          </p>
+        </div>
+
+        <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-2">
+          <div className="flex items-center gap-2 text-emerald-600">
+            <Globe2 className="w-4 h-4" />
+            <h3 className="text-sm font-bold text-slate-900">Respectful Web Analysis</h3>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            When submitting website URLs, ensure you have permission to view the public site. PaletteLens crawls internal pages politely with rate-limiting.
+          </p>
+        </div>
+
+        <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-2">
+          <div className="flex items-center gap-2 text-amber-600">
+            <CheckCircle2 className="w-4 h-4" />
+            <h3 className="text-sm font-bold text-slate-900">Full Palette Ownership</h3>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            All exported CSS custom variables, Tailwind configurations, JSON structures, and color swatches are 100% yours to use in personal or commercial projects.
+          </p>
+        </div>
+
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6 text-slate-700 text-sm leading-relaxed">
-        <section className="space-y-2">
-          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            1. Acceptance of Terms
-          </h2>
-          <p>
-            By accessing PaletteLens, you agree to comply with these terms. PaletteLens provides genuine color extraction services for web development, brand identity design, and digital color analysis.
-          </p>
-        </section>
-
-        <section className="space-y-2">
-          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-amber-600" />
-            2. Usage Allowance & Free Trial Limit
-          </h2>
-          <p>
-            Guest users are permitted up to 3 free trial analyses. Beyond 3 free trials, user account registration is required to continue accessing palette extraction tools and history storage.
-          </p>
-        </section>
-
-        <section className="space-y-2">
-          <h2 className="text-base font-bold text-slate-900">3. Fair Use & Crawling Policies</h2>
-          <p>
-            When submitting website URLs, users must ensure they have permission to access the target domain. PaletteLens respects robots.txt and limits automated crawling depth to maintain web ethics.
-          </p>
-        </section>
-
-        <section className="space-y-2">
-          <h2 className="text-base font-bold text-slate-900">4. Intellectual Property</h2>
-          <p>
-            Extracted color swatches, generated CSS root variables, and Tailwind configuration code belong entirely to you for use in personal or commercial projects.
-          </p>
-        </section>
-      </div>
     </div>
   );
 };

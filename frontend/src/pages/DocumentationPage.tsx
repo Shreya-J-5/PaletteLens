@@ -1,87 +1,83 @@
 import React from 'react';
-import { BookOpen, Code2, Layers, Cpu, Download, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Cpu, Layers, Code2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const DocumentationPage: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-6 flex-1 flex flex-col justify-center">
+      
+      {/* Back Button */}
       <Link
         to="/"
-        className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors self-start"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-3.5 h-3.5" />
         Back to Home
       </Link>
 
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold border border-emerald-200">
-          <BookOpen className="w-3.5 h-3.5" />
-          <span>Documentation</span>
-        </div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">PaletteLens Engine Guide</h1>
-        <p className="text-sm text-slate-500">Technical architecture and color extraction documentation</p>
+      {/* Header */}
+      <div className="space-y-1">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          PaletteLens Engine Guide
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-500 font-normal">
+          How our perceptual color engine extracts authentic production colors.
+        </p>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-8 text-slate-700 text-sm leading-relaxed">
+      {/* Designer & Developer Engine Overview Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
-        {/* Core Algorithm */}
-        <section className="space-y-3">
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <Cpu className="w-5 h-5 text-sky-600" />
-            1. Perceptual Color Extraction Engine
-          </h2>
-          <p>
-            Unlike traditional RGB space clustering which distorts human perception of color brightness, PaletteLens converts image pixels into the <strong>CIE L*a*b*</strong> 3D color space before performing perceptual clustering and Delta E perceptual merging.
-          </p>
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 font-mono text-xs text-slate-800 space-y-1">
-            <p className="text-slate-500">// 1. Convert sRGB → CIE XYZ → CIE L*a*b*</p>
-            <p>L = (116.0 * fy) - 16.0</p>
-            <p>a = 500.0 * (fx - fy)</p>
-            <p>b = 200.0 * (fy - fz)</p>
-            <p className="text-slate-500">// 2. Compute Euclidean Delta E distance for color merging</p>
-            <p>Delta_E = sqrt( (L1 - L2)^2 + (a1 - a2)^2 + (b1 - b2)^2 )</p>
+        {/* Card 1: Perceptual LAB Engine */}
+        <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-2.5">
+          <div className="flex items-center gap-2 text-sky-600">
+            <Cpu className="w-4 h-4" />
+            <h3 className="text-sm font-bold text-slate-900">Perceptual LAB Engine</h3>
           </div>
-        </section>
-
-        {/* Website Crawling */}
-        <section className="space-y-3">
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <Layers className="w-5 h-5 text-indigo-600" />
-            2. Web Page Crawling & CSS Parsing
-          </h2>
-          <p>
-            For target URLs, PaletteLens fetches reachable internal pages, extracts computed inline styles, stylesheet declarations, and rendered DOM element pixels to produce both page-level and aggregated global website palettes.
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Standard RGB space distorts human perception of color brightness. PaletteLens converts pixels into the <strong className="text-slate-900">CIE L*a*b*</strong> 3D color space to cluster colors matching human vision.
           </p>
-        </section>
+          <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-[11px] font-mono text-slate-700 space-y-0.5">
+            <p className="text-slate-400">// Perceptual Delta E Distance</p>
+            <p className="text-sky-700">ΔE = √( (L1-L2)² + (a1-a2)² + (b1-b2)² )</p>
+          </div>
+        </div>
 
-        {/* Code Export Formats */}
-        <section className="space-y-3">
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <Download className="w-5 h-5 text-emerald-600" />
-            3. Export Formats
-          </h2>
-          <p>Extracted color palettes can be copied or downloaded in multiple ready-to-use developer formats:</p>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-medium pt-1">
-            <li className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2">
-              <Code2 className="w-4 h-4 text-sky-600" />
-              <span>CSS Root Custom Variables (:root)</span>
-            </li>
-            <li className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2">
-              <Code2 className="w-4 h-4 text-indigo-600" />
-              <span>Tailwind CSS Color Config (theme.extend)</span>
-            </li>
-            <li className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2">
-              <Code2 className="w-4 h-4 text-emerald-600" />
-              <span>Structured JSON Metadata Array</span>
-            </li>
-            <li className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2">
-              <Code2 className="w-4 h-4 text-amber-600" />
-              <span>HEX, RGB, HSL & CIE LAB Values</span>
-            </li>
-          </ul>
-        </section>
+        {/* Card 2: Website & Asset Crawling */}
+        <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-2.5">
+          <div className="flex items-center gap-2 text-indigo-600">
+            <Layers className="w-4 h-4" />
+            <h3 className="text-sm font-bold text-slate-900">Deep Site Crawling</h3>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            For website URLs, PaletteLens fetches reachable internal pages, extracts computed DOM styles, and calculates both individual page palettes and recurring site-wide brand colors.
+          </p>
+          <div className="p-2.5 bg-indigo-50/50 border border-indigo-100 rounded-lg text-[11px] font-medium text-indigo-900 space-y-1">
+            <p>✓ DOM CSS Computed Colors</p>
+            <p>✓ Page-by-Page Breakdown</p>
+            <p>✓ Global Frequency Aggregation</p>
+          </div>
+        </div>
+
+        {/* Card 3: Ready-to-Use Exports */}
+        <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-2.5">
+          <div className="flex items-center gap-2 text-emerald-600">
+            <Code2 className="w-4 h-4" />
+            <h3 className="text-sm font-bold text-slate-900">Instant Exports</h3>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Export extracted palettes directly into your design system or codebase with 1-click copying across multiple production formats.
+          </p>
+          <div className="grid grid-cols-2 gap-1.5 text-[11px] font-medium text-slate-700 pt-1">
+            <span className="p-1.5 bg-slate-50 border border-slate-200 rounded text-center">CSS Variables</span>
+            <span className="p-1.5 bg-slate-50 border border-slate-200 rounded text-center">Tailwind Config</span>
+            <span className="p-1.5 bg-slate-50 border border-slate-200 rounded text-center">Structured JSON</span>
+            <span className="p-1.5 bg-slate-50 border border-slate-200 rounded text-center">HEX / RGB / HSL</span>
+          </div>
+        </div>
 
       </div>
+
     </div>
   );
 };
