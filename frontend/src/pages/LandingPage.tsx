@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Globe, Image as ImageIcon, FileText, ArrowRight } from 'lucide-react';
+import { Globe, Image as ImageIcon, FileText, File, ArrowRight } from 'lucide-react';
 import { createWebsiteAnalysis, createFileUploadAnalysis } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
@@ -50,12 +50,12 @@ export const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+    <div className="flex-1 flex flex-col justify-center items-center w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 my-auto text-center">
       
-      {/* Hero Header */}
-      <div className="space-y-3 max-w-2xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-          Extract the colours behind any design.
+      {/* 1. Headline & Description Hero Group */}
+      <div className="space-y-4 max-w-2xl mx-auto">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
+          Extract the <span className="text-sky-600">colours</span> behind<br className="hidden sm:inline" /> any design.
         </h1>
 
         <p className="text-sm sm:text-base text-slate-600 max-w-lg mx-auto font-normal leading-relaxed">
@@ -63,8 +63,8 @@ export const LandingPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Main Input Card */}
-      <div className="mt-7 bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-sm max-w-xl mx-auto w-full space-y-5 text-left">
+      {/* 2. Main Analysis Card */}
+      <div className="mt-8 sm:mt-9 bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-sm max-w-xl mx-auto w-full space-y-5 text-left">
         
         {/* Source Type Selector */}
         <div className="grid grid-cols-3 gap-2 bg-slate-100/90 p-1.5 rounded-xl text-xs font-semibold">
@@ -172,6 +172,34 @@ export const LandingPage: React.FC = () => {
             )}
           </button>
         </form>
+      </div>
+
+      {/* 3. Supporting Content directly beneath Card */}
+      <div className="mt-10 sm:mt-12 space-y-3 text-slate-500">
+        <p className="text-xs font-medium text-slate-400">
+          Supports all major formats
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-xs font-medium text-slate-600">
+          <div className="flex items-center gap-1.5">
+            <Globe className="w-3.5 h-3.5 text-sky-600" />
+            <span>Websites</span>
+          </div>
+          <span className="text-slate-300">|</span>
+          <div className="flex items-center gap-1.5">
+            <ImageIcon className="w-3.5 h-3.5 text-indigo-600" />
+            <span>Images</span>
+          </div>
+          <span className="text-slate-300">|</span>
+          <div className="flex items-center gap-1.5">
+            <FileText className="w-3.5 h-3.5 text-emerald-600" />
+            <span>PDFs</span>
+          </div>
+          <span className="text-slate-300">|</span>
+          <div className="flex items-center gap-1.5">
+            <File className="w-3.5 h-3.5 text-slate-500" />
+            <span>Other Files</span>
+          </div>
+        </div>
       </div>
 
     </div>
