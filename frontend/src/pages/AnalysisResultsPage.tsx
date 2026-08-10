@@ -246,6 +246,7 @@ export const AnalysisResultsPage: React.FC = () => {
       {showExportModal && (
         <ExportModal
           analysisId={analysis.id}
+          analysis={analysis}
           onClose={() => setShowExportModal(false)}
         />
       )}
