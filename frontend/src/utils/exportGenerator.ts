@@ -8,8 +8,7 @@ export const slugify = (text: string): string => {
     .replace(/^-+|-+$/g, '') || 'color';
 };
 
-export const getExportTargetColours = (analysis?: Analysis | null, passedColours?: Colour[]): Colour[] => {
-  if (passedColours && passedColours.length > 0) return passedColours;
+export const getExportTargetColours = (analysis?: Analysis | null): Colour[] => {
   if (!analysis || !analysis.colours || analysis.colours.length === 0) return [];
   const globalColours = analysis.colours.filter((c) => c.page_id === null || c.page_id === undefined);
   return globalColours.length > 0 ? globalColours : analysis.colours;

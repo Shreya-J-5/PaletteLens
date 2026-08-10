@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { X, Copy, Check, Download, Code, FileText, Palette, FileJson } from 'lucide-react';
-import { getExportDownloadUrl, apiClient, fetchAnalysisDetail } from '../api/client';
 import { Analysis, Colour } from '../types';
 import {
   generateCssExport,
@@ -12,87 +11,45 @@ import {
 
 interface ExportModalProps {
   analysisId: string;
-  analysis?: Analysis | null;
-  colours?: Colour[];
+  analysis: Analysis;
   onClose: () => void;
 }
 
 export const ExportModal: React.FC<ExportModalProps> = ({
   analysisId,
-  analysis: initialAnalysis,
-  colours: initialColours,
+  analysis,
   onClose,
 }) => {
   const [activeTab, setActiveTab] = useState<'css' | 'json' | 'tailwind' | 'png'>('css');
-  const [content, setContent] = useState<string>('');
   const [copied, setCopied] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [currentAnalysis, setCurrentAnalysis] = useState<Analysis | null>(initialAnalysis || null);
-  const [pngDataUrl, setPngDataUrl] = useState<string>('');
 
-  useEffect(() => {
-    if (!currentAnalysis && analysisId) {
-      fetchAnalysisDetail(analysisId)
-        .then((data) => setCurrentAnalysis(data))
-        .catch((err) => console.warn('Could not load analysis details for fallback export:', err));
-    }
-  }, [analysisId, currentAnalysis]);
+  // Get the colours to export directly from the analysis prop - no async needed
+  const exportColours = useMemo(() => {
+    return getExportTargetColours(analysis);
+  }, [analysis]);
 
-  const getColoursForExport = (): Colour[] => {
-    return getExportTargetColours(currentAnalysis, initialColours);
-  };
+  // Generate all export content client-side - no backend API dependency
+  const content = useMemo(() => {
+    if (activeTab === 'png') return '';
+    if (activeTab === 'css') return generateCssExport(exportColours);
+    if (activeTab === 'json') return generateJsonExport(exportColours);
+    if (activeTab === 'tailwind') return generateTailwindExport(exportColours);
+    return '';
+  }, [activeTab, exportColours]);
 
-  useEffect(() => {
-    const colours = getColoursForExport();
-
+  // Generate PNG data URL client-side
+  const pngDataUrl = useMemo(() => {
     if (activeTab === 'png') {
-      const canvasUrl = generatePngSwatchDataUrl(colours);
-      setPngDataUrl(canvasUrl);
-      return;
+      return generatePngSwatchDataUrl(exportColours);
     }
-
-    setLoading(true);
-
-    const generateFallback = () => {
-      const cols = getColoursForExport();
-      if (activeTab === 'css') {
-        setContent(generateCssExport(cols));
-      } else if (activeTab === 'json') {
-        setContent(generateJsonExport(cols));
-      } else if (activeTab === 'tailwind') {
-        setContent(generateTailwindExport(cols));
-      }
-    };
-
-    if (analysisId.startsWith('local_')) {
-      generateFallback();
-      setLoading(false);
-      return;
-    }
-
-    apiClient
-      .get(`/analyses/${analysisId}/export/${activeTab}`)
-      .then((res) => {
-        if (typeof res.data === 'object') {
-          setContent(JSON.stringify(res.data, null, 2));
-        } else {
-          setContent(res.data);
-        }
-      })
-      .catch(() => {
-        generateFallback();
-      })
-      .finally(() => setLoading(false));
-  }, [analysisId, activeTab, currentAnalysis]);
+    return '';
+  }, [activeTab, exportColours]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  const backendPngUrl = getExportDownloadUrl(analysisId, 'png');
-  const downloadHref = pngDataUrl || backendPngUrl;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
@@ -177,7 +134,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                 {copied ? <Check className="w-3.5 h-3.5 text-white" /> : <Copy className="w-3.5 h-3.5 text-white" />}
                 {copied ? 'Copied Code!' : 'Copy Code'}
               </button>
-              <pre className="pr-24 whitespace-pre leading-relaxed">{loading ? 'Generating export payload...' : content}</pre>
+              <pre className="pr-24 whitespace-pre leading-relaxed">{content}</pre>
             </div>
           ) : (
             <div className="text-center space-y-5 py-6">
@@ -187,9 +144,15 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                 <p className="text-xs text-[#9CA3AF] mt-1">Export a clean image file containing hex codes and color swatches.</p>
               </div>
 
+              {pngDataUrl && (
+                <div className="max-w-md mx-auto rounded-xl overflow-hidden border border-[#262830]">
+                  <img src={pngDataUrl} alt="Color palette swatch preview" className="w-full" />
+                </div>
+              )}
+
               <div>
                 <a
-                  href={downloadHref}
+                  href={pngDataUrl || '#'}
                   download={`palettelens_${analysisId}.png`}
                   className="inline-flex items-center gap-2 px-6 py-3 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white rounded-xl text-xs font-semibold shadow-lg transition-all"
                 >
@@ -204,4 +167,3 @@ export const ExportModal: React.FC<ExportModalProps> = ({
     </div>
   );
 };
-
